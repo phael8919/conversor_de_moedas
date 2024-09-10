@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cotações</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.12.1/css/all.css" crossorigin="anonymous">
+    
+</head>
+
+<body onload="calcular()">
+    
+    <div class="container my-4">
+        <div class="row justify-content-center">
+            <div class="col-10 col-md-4 card p-2 bg-light">
+                <div class="row p-1">
+                    <span class="col-2 bg-dark rounded text-center mx-2" style="font-size: 2.2em; color:white;">
+                        <i class="fas fa-sharp fa-solid fa-dollar-sign px-2 "></i>
+                    </span>
+                    <span class="col-9 text-center">
+                        <h1 class=""style="font-size: 2.5rem;">COTAÇÕES</h1>
+                    </span>
+                </div>                
+            </div>
+        </div>
+    </div>
+
+    <div class="container my-2">
+        <div class="row justify-content-center">
+            <div class="col-10 col-md-4 card p-2 bg-light">
+                <div class="row">
+                    <div class="col-12 py-2 ">
+                        <label for="" class="form-label">Escolha a Moeda</label>
+                        <select id="moedas" name="moedas" class="form-select" onchange="calcular()">
+                            <option value="dolar" selected>Dólar</option>
+                            <option value="euro">Euro</option>                            
+                        </select>
+                    </div>
+
+                    <div class="col-12">                        
+                        <label for="" class="form-label">Cotação</label>
+                        <div class="input-group mb-3">                            
+                            <span class="input-group-text" id="cifrao"></span>
+                            <input type="text" id="valor" class="form-control" disabled>
+                        </div>
+                    </div>
+
+                    <div class="col-12">                        
+                        <label for="" class="form-label">Insira o valor a converter</label>
+                        <div class="input-group mb-3">                            
+                            <span class="input-group-text" id="cifrao2"></span>
+                            <input inputmode="numeric" class="form-control" aria-label="Username" value="1,00" id="quantidade" onchange="calcular()">
+                        </div>
+                    </div>
+
+                    <div class="col-12">                        
+                        <label for="" class="form-label">Total da cotação</label>
+                        <div class="input-group mb-3">                            
+                            <span class="input-group-text">R$</span>
+                            <input type="text" class="form-control" aria-label="Username" id="total" disabled>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+        
+    <script>
+        function calcular(){
+           if(document.getElementById('moedas').value == 'dolar'){
+                document.querySelector('#cifrao').textContent = '$'
+                document.querySelector('#cifrao2').textContent = '$'
+                fetch('https://economia.awesomeapi.com.br/json/last/USD-BRL')
+                .then(cotacoes => cotacoes.json())
+                .then(dados => {
+                    let val = dados.USDBRL.ask
+                    document.getElementById('valor').value=val.replace('.',',')
+                    let tot = parseFloat(dados.USDBRL.ask) * parseFloat(document.getElementById('quantidade').value)
+                    document.getElementById('total').value= tot.toFixed(3)
+                })
+           }else{
+                document.querySelector('#cifrao').textContent = '€'
+                document.querySelector('#cifrao2').textContent = '€'
+                fetch('https://economia.awesomeapi.com.br/json/last/EUR-BRL')
+                .then(cotacoes => cotacoes.json())
+                .then(dados => {
+                    let val = dados.EURBRL.ask
+                    document.getElementById('valor').value=val.replace('.',',')
+                    let tot = parseFloat(dados.EURBRL.ask) * parseFloat(document.getElementById('quantidade').value)  
+                    document.getElementById('total').value= tot.toFixed(3)
+                })
+           }
+        }  
+    </script>
+    
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+</body>
+</html>
